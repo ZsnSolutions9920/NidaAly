@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 const navLinks = [
   { name: "New Arrivals", href: "/collections/new-arrivals" },
@@ -92,9 +93,14 @@ export default function Header() {
             {/* Center: Logo */}
             <div className="w-1/3 text-center">
               <Link href="/">
-                <h1 className="text-2xl md:text-3xl tracking-[0.3em] uppercase font-light">
-                  NidaAly
-                </h1>
+                <Image
+                  src="/logoblack.webp"
+                  alt="NidaAly"
+                  width={150}
+                  height={40}
+                  className="h-8 md:h-10 w-auto mx-auto"
+                  priority
+                />
               </Link>
             </div>
 

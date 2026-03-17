@@ -13,6 +13,9 @@ const montserrat = Montserrat({
 export const metadata: Metadata = {
   title: "NidaAly | Official eStore",
   description: "Luxury Pakistani fashion by NidaAly. Shop the latest collections of bridal, formal, pret, and luxury wear.",
+  icons: {
+    icon: "/logo.webp",
+  },
 };
 
 export default function RootLayout({

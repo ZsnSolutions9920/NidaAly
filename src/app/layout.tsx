@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
+import { cookies } from "next/headers";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { Providers } from "@/components/providers";
+import type { LocaleCode } from "@/lib/locale";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
@@ -18,17 +21,22 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies();
+  const locale = (cookieStore.get("locale")?.value as LocaleCode) ?? "pk";
+
   return (
     <html lang="en">
       <body className={`${montserrat.variable} antialiased font-sans`}>
-        <Header />
-        <main>{children}</main>
-        <Footer />
+        <Providers locale={locale}>
+          <Header />
+          <main>{children}</main>
+          <Footer />
+        </Providers>
       </body>
     </html>
   );

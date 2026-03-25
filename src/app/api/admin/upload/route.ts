@@ -30,6 +30,7 @@ export async function POST(req: NextRequest) {
       const filename = `products/${uuidv4()}.${ext}`;
 
       const blob = await put(filename, file, {
+        access: "public",
         addRandomSuffix: false,
         allowOverwrite: true,
       });

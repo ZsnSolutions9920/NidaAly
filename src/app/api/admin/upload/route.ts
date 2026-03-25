@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth";
-import { writeFile, mkdir } from "fs/promises";
-import path from "path";
+import { put } from "@vercel/blob";
 import { v4 as uuidv4 } from "uuid";
-
-const UPLOAD_DIR = path.join(process.cwd(), "public/uploads");
 
 export async function POST(req: NextRequest) {
   try {
@@ -17,19 +14,19 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "No files provided" }, { status: 400 });
     }
 
-    await mkdir(UPLOAD_DIR, { recursive: true });
-
     const uploaded: { url: string; name: string }[] = [];
 
     for (const file of files) {
-      const ext = path.extname(file.name) || ".jpg";
-      const filename = `${uuidv4()}${ext}`;
-      const buffer = Buffer.from(await file.arrayBuffer());
-      const filepath = path.join(UPLOAD_DIR, filename);
+      const ext = file.name.split(".").pop() || "jpg";
+      const filename = `products/${uuidv4()}.${ext}`;
 
-      await writeFile(filepath, buffer);
+      const blob = await put(filename, file, {
+        access: "public",
+        addRandomSuffix: false,
+      });
+
       uploaded.push({
-        url: `/uploads/${filename}`,
+        url: blob.url,
         name: file.name,
       });
     }
@@ -40,6 +37,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
     console.error("Upload error:", error);
-    return NextResponse.json({ error: "Upload failed" }, { status: 500 });
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Upload failed" },
+      { status: 500 }
+    );
   }
 }

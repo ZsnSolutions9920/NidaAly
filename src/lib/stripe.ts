@@ -1,9 +1,20 @@
 import Stripe from "stripe";
 
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2025-04-30.basil",
-  typescript: true,
-});
+let _stripe: Stripe | null = null;
+
+function getStripe(): Stripe {
+  if (!_stripe) {
+    const key = process.env.STRIPE_SECRET_KEY;
+    if (!key) {
+      throw new Error("STRIPE_SECRET_KEY environment variable is not set.");
+    }
+    _stripe = new Stripe(key, {
+      apiVersion: "2026-02-25.clover",
+      typescript: true,
+    });
+  }
+  return _stripe;
+}
 
 /**
  * Map our locale currency to Stripe currency codes (lowercase)
@@ -24,7 +35,7 @@ export async function createPaymentIntent({
   currency: string;
   metadata?: Record<string, string>;
 }) {
-  return stripe.paymentIntents.create({
+  return getStripe().paymentIntents.create({
     amount,
     currency: stripeCurrency(currency),
     metadata: metadata ?? {},
@@ -36,7 +47,7 @@ export async function createPaymentIntent({
  * Retrieve a Payment Intent
  */
 export async function getPaymentIntent(paymentIntentId: string) {
-  return stripe.paymentIntents.retrieve(paymentIntentId);
+  return getStripe().paymentIntents.retrieve(paymentIntentId);
 }
 
 /**
@@ -51,7 +62,7 @@ export async function createRefund({
   amount?: number;
   reason?: "duplicate" | "fraudulent" | "requested_by_customer";
 }) {
-  return stripe.refunds.create({
+  return getStripe().refunds.create({
     payment_intent: paymentIntentId,
     amount,
     reason,
@@ -65,10 +76,9 @@ export function constructWebhookEvent(
   body: string,
   signature: string
 ): Stripe.Event {
-  return stripe.webhooks.constructEvent(
+  return getStripe().webhooks.constructEvent(
     body,
     signature,
     process.env.STRIPE_WEBHOOK_SECRET!
   );
 }
-

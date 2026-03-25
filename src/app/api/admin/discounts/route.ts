@@ -63,7 +63,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(discount, { status: 201 });
   } catch (error) {
     if (error instanceof z.ZodError)
-      return NextResponse.json({ error: error.errors }, { status: 400 });
+      return NextResponse.json({ error: error.issues }, { status: 400 });
     if (error instanceof Error && error.message === "Forbidden")
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

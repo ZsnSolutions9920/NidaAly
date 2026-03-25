@@ -133,7 +133,7 @@ export async function trackEvent({
   locale?: string;
 }) {
   return db.analyticsEvent.create({
-    data: { type, data: data ?? undefined, sessionId, userId, locale },
+    data: { type, data: data as unknown as undefined, sessionId, userId, locale },
   });
 }
 

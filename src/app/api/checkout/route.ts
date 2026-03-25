@@ -59,7 +59,7 @@ export async function POST(req: NextRequest) {
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: error.errors }, { status: 400 });
+      return NextResponse.json({ error: error.issues }, { status: 400 });
     }
     console.error("POST /api/checkout error:", error);
     const message = error instanceof Error ? error.message : "Internal server error";

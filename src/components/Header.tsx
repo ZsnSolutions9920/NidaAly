@@ -31,7 +31,7 @@ export default function Header() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<SearchResult | null>(null);
   const searchRef = useRef<HTMLDivElement>(null);
-  const searchTimeout = useRef<NodeJS.Timeout>();
+  const searchTimeout = useRef<NodeJS.Timeout>(undefined);
 
   const { data: session } = useSession();
   const { itemCount } = useCart();

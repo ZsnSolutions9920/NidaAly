@@ -9,7 +9,6 @@ export async function POST(req: NextRequest) {
   try {
     await requireAdmin();
 
-    // Check for blob token
     if (!process.env.BLOB_READ_WRITE_TOKEN) {
       return NextResponse.json(
         { error: "BLOB_READ_WRITE_TOKEN is not configured. Go to Vercel Dashboard → Storage → Create Blob Store." },
@@ -31,8 +30,8 @@ export async function POST(req: NextRequest) {
       const filename = `products/${uuidv4()}.${ext}`;
 
       const blob = await put(filename, file, {
-        access: "public",
         addRandomSuffix: false,
+        allowOverwrite: true,
       });
 
       uploaded.push({

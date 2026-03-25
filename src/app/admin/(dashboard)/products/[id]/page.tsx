@@ -85,6 +85,25 @@ export default function AdminProductEditPage() {
     { id?: string; title: string; sku: string; pricePKR: string; priceAED: string; priceUSD: string; inventoryQty: string; option1: string }[]
   >([]);
   const [options, setOptions] = useState<{ name: string; values: string }[]>([]);
+  const [allCollections, setAllCollections] = useState<{ id: string; title: string }[]>([]);
+  const [selectedCollections, setSelectedCollections] = useState<Set<string>>(new Set());
+
+  // Fetch all collections for the selector
+  useEffect(() => {
+    fetch("/api/admin/collections")
+      .then((res) => res.json())
+      .then((data) => setAllCollections(data.items ?? []))
+      .catch(() => {});
+  }, []);
+
+  const toggleCollection = (id: string) => {
+    setSelectedCollections((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
 
   const fetchProduct = useCallback(async () => {
     try {
@@ -128,6 +147,11 @@ export default function AdminProductEditPage() {
           values: o.values.join(", "),
         }))
       );
+
+      // Set selected collections
+      if (product.collections) {
+        setSelectedCollections(new Set(product.collections.map((c) => c.collection.id)));
+      }
     } catch {
       setError("Failed to load product");
     } finally {
@@ -236,6 +260,7 @@ export default function AdminProductEditPage() {
           option1: v.option1 || v.title,
           position: i,
         })),
+      collectionIds: Array.from(selectedCollections),
     };
 
     try {
@@ -481,6 +506,36 @@ export default function AdminProductEditPage() {
             <input type="number" value={form.compareAtPKR} onChange={(e) => update("compareAtPKR", e.target.value)} className="w-full border border-gray-200 p-2.5 text-sm focus:border-charcoal focus:outline-none rounded" />
           </div>
         </div>
+      </div>
+
+      {/* Categories / Collections */}
+      <div className="bg-white rounded-lg border border-gray-100 p-6 space-y-4">
+        <h2 className="font-semibold">Categories</h2>
+        <p className="text-xs text-medium-gray">Select which categories this product belongs to</p>
+        {allCollections.length === 0 ? (
+          <p className="text-sm text-medium-gray">No categories yet. Create them in the Collections page.</p>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            {allCollections.map((col) => (
+              <label
+                key={col.id}
+                className={`flex items-center gap-3 p-3 border rounded-lg cursor-pointer transition-all ${
+                  selectedCollections.has(col.id)
+                    ? "border-charcoal bg-charcoal/5"
+                    : "border-gray-200 hover:border-gray-300"
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  checked={selectedCollections.has(col.id)}
+                  onChange={() => toggleCollection(col.id)}
+                  className="w-4 h-4"
+                />
+                <span className="text-sm font-medium">{col.title}</span>
+              </label>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Options */}

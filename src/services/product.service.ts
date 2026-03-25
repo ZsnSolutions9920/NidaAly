@@ -82,6 +82,9 @@ export async function getProducts({
         },
       },
       options: { orderBy: { position: "asc" } },
+      collections: {
+        include: { collection: { select: { id: true, title: true } } },
+      },
     },
   });
 

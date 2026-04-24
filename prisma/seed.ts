@@ -95,6 +95,7 @@ async function main() {
       compareAtPKR: 42000000,
       publishedAt: new Date(),
       collectionSlug: "bridals",
+      images: ["/HB_16040.JPG", "/HB_16046.JPG", "/HB_16099.JPG", "/HB_16168.JPG"],
     },
     {
       title: "Ivory Pearl Formal Gown",
@@ -109,6 +110,7 @@ async function main() {
       priceUSD: 67500,    // $675
       publishedAt: new Date(),
       collectionSlug: "luxury-formals",
+      images: ["/HB_16214.JPG", "/HB_16315.JPG", "/HB_16323.JPG"],
     },
     {
       title: "Sage Green Pret Kurta",
@@ -123,6 +125,7 @@ async function main() {
       priceUSD: 4500,    // $45
       publishedAt: new Date(),
       collectionSlug: "pret",
+      images: ["/IMG_5672.jpeg", "/IMG_5677.jpeg", "/IMG_5688.jpeg"],
     },
     {
       title: "Midnight Blue Velvet Shawl",
@@ -137,6 +140,7 @@ async function main() {
       priceUSD: 16500,   // $165
       publishedAt: new Date(),
       collectionSlug: "luxury-formals",
+      images: ["/HB_16329.JPG", "/HB_16354.JPG", "/HB_16849.JPG"],
     },
     {
       title: "Rose Gold Bridal Gharara",
@@ -151,6 +155,7 @@ async function main() {
       priceUSD: 100000,   // $1,000
       publishedAt: new Date(),
       collectionSlug: "bridals",
+      images: ["/HB_16891.JPG", "/HB_16929.JPG", "/HB_16961.JPG", "/HB_16977.JPG"],
     },
     {
       title: "Black Silk Pret Set",
@@ -165,11 +170,19 @@ async function main() {
       priceUSD: 6700,    // $67
       publishedAt: new Date(),
       collectionSlug: "pret",
+      images: [
+        "/IMG_8477.jpg",
+        "/IMG_8482.jpg",
+        "/IMG_8514.jpg",
+        "/IMG_8547.jpg",
+        "/IMG_8593.jpg",
+        "/IMG_8669%20(1).jpg",
+      ],
     },
   ];
 
   for (const productData of products) {
-    const { collectionSlug, ...data } = productData;
+    const { collectionSlug, images: productImages, ...data } = productData;
     const collection = collections.find((c) => c.slug === collectionSlug);
 
     const product = await prisma.product.upsert({
@@ -178,20 +191,6 @@ async function main() {
       create: {
         ...data,
         seoTitle: data.title + " | NidaAly",
-        images: {
-          create: [
-            {
-              url: `https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=800&h=1000&fit=crop`,
-              altText: data.title,
-              position: 0,
-            },
-            {
-              url: `https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800&h=1000&fit=crop`,
-              altText: `${data.title} - Detail`,
-              position: 1,
-            },
-          ],
-        },
         options: {
           create: [
             { name: "Size", values: ["XS", "S", "M", "L", "XL"], position: 0 },
@@ -220,6 +219,19 @@ async function main() {
         }),
       },
     });
+
+    // Sync images: drop existing, then insert in fixed order so each product
+    // always has the same images mapped to it.
+    await prisma.productImage.deleteMany({ where: { productId: product.id } });
+    await prisma.productImage.createMany({
+      data: productImages.map((url, i) => ({
+        productId: product.id,
+        url,
+        altText: i === 0 ? data.title : `${data.title} - ${i + 1}`,
+        position: i,
+      })),
+    });
+
     console.log("Product created:", product.title);
   }
 

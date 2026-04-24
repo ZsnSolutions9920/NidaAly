@@ -95,7 +95,7 @@ async function main() {
       compareAtPKR: 42000000,
       publishedAt: new Date(),
       collectionSlug: "bridals",
-      images: ["/HB_16040.JPG", "/HB_16046.JPG", "/HB_16099.JPG", "/HB_16168.JPG"],
+      images: ["/HB_16040.jpg", "/HB_16046.jpg", "/HB_16099.jpg", "/HB_16168.jpg"],
     },
     {
       title: "Ivory Pearl Formal Gown",
@@ -110,7 +110,7 @@ async function main() {
       priceUSD: 67500,    // $675
       publishedAt: new Date(),
       collectionSlug: "luxury-formals",
-      images: ["/HB_16214.JPG", "/HB_16315.JPG", "/HB_16323.JPG"],
+      images: ["/HB_16214.jpg", "/HB_16315.jpg", "/HB_16323.jpg"],
     },
     {
       title: "Sage Green Pret Kurta",
@@ -125,7 +125,7 @@ async function main() {
       priceUSD: 4500,    // $45
       publishedAt: new Date(),
       collectionSlug: "pret",
-      images: ["/IMG_5672.jpeg", "/IMG_5677.jpeg", "/IMG_5688.jpeg"],
+      images: ["/IMG_5672.jpg", "/IMG_5677.jpg", "/IMG_5688.jpg"],
     },
     {
       title: "Midnight Blue Velvet Shawl",
@@ -140,7 +140,7 @@ async function main() {
       priceUSD: 16500,   // $165
       publishedAt: new Date(),
       collectionSlug: "luxury-formals",
-      images: ["/HB_16329.JPG", "/HB_16354.JPG", "/HB_16849.JPG"],
+      images: ["/HB_16329.jpg", "/HB_16354.jpg", "/HB_16849.jpg"],
     },
     {
       title: "Rose Gold Bridal Gharara",
@@ -155,7 +155,7 @@ async function main() {
       priceUSD: 100000,   // $1,000
       publishedAt: new Date(),
       collectionSlug: "bridals",
-      images: ["/HB_16891.JPG", "/HB_16929.JPG", "/HB_16961.JPG", "/HB_16977.JPG"],
+      images: ["/HB_16891.jpg", "/HB_16929.jpg", "/HB_16961.jpg", "/HB_16977.jpg"],
     },
     {
       title: "Black Silk Pret Set",
@@ -176,7 +176,6 @@ async function main() {
         "/IMG_8514.jpg",
         "/IMG_8547.jpg",
         "/IMG_8593.jpg",
-        "/IMG_8669%20(1).jpg",
       ],
     },
   ];
